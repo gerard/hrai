@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <db.h>
-#include <ustr.h>
 
 #include "lib/hdb.h"
 #include "types.h"
