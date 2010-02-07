@@ -12,10 +12,7 @@ int hrai_list(const char *db_name)
 {
     DBT key, data;
     DBC *it;
-    DB *dbp;
-
-    if (db_create(&dbp, NULL, 0)) return 1;
-    if (dbp->open(dbp, NULL, hrai_db_filename(), NULL, DB_BTREE, 0, 0)) return 1;
+    DB *dbp = hrai_db_open();
 
     memset(&key, 0, sizeof(DBT));
     memset(&data, 0, sizeof(DBT));
@@ -38,7 +35,7 @@ int hrai_list(const char *db_name)
 
     if (ret != DB_NOTFOUND) return 1;
     if (it != NULL) it->close(it);
-    if (dbp->close(dbp, 0)) return 1;
+    hrai_db_close(dbp);
 
     return 0;
 }

@@ -61,17 +61,15 @@ static int parse_int(char *input, int *number)
 int hrai_add(struct tm date, int amount, const char *desc)
 {
     DBT key, data;
-    DB *dbp;
+    DB *dbp = hrai_db_open();
 
-    if (db_create(&dbp, NULL, 0)) return 1;
-    if (dbp->open(dbp, NULL, hrai_db_filename(), NULL, DB_BTREE, 0, 0)) return 1;
+    if (!dbp) {
+        fprintf(stderr, "Couldn't open DB\n");
+        return 1;
+    }
 
     memset(&key, 0, sizeof(DBT));
     memset(&data, 0, sizeof(DBT));
-
-    time_t keystamp = time(NULL);
-    key.data = &keystamp;
-    key.size = sizeof(time_t);
 
     struct hrai_entry entry;
     memset(&entry, 0, sizeof(struct hrai_entry));
@@ -81,10 +79,10 @@ int hrai_add(struct tm date, int amount, const char *desc)
 
     data.data = &entry;
     data.size = sizeof(struct hrai_entry);
-    int ret = dbp->put(dbp, NULL, &key, &data, DB_NOOVERWRITE);
+    int ret = dbp->put(dbp, NULL, &key, &data, DB_APPEND);
 
     if (ret == DB_KEYEXIST) return 1;
-    if (dbp->close(dbp, 0)) return 1;
+    hrai_db_close(dbp);
 
     return 0;
 }

@@ -12,7 +12,7 @@ int hrai_init(const char *dbname, int force)
 
     if (db_create(&dbp, NULL, 0)) return 1;
     if (dbp->open(dbp, NULL, hrai_db_filename()
-                     , NULL, DB_BTREE, DB_CREATE | DB_EXCL, 0)) {
+                     , NULL, DB_RECNO, DB_CREATE | DB_EXCL, 0)) {
          return 1;
     }
     if (dbp->close(dbp, 0)) return 1;
