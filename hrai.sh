@@ -13,5 +13,5 @@ shift
 
 [ ! -f $CMD_BINARY ] && exit 1
 
-$CMD_BINARY $*
+$CMD_BINARY "$@"
 exit $?
